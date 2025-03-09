@@ -1,0 +1,59 @@
+/* app/components/Onboarding.module.css */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #F5F5F5; /* Creamy beige */
+    color: #6D4C41; /* Deep plum */
+  }
+  
+  .content {
+    text-align: center;
+    opacity: 0;
+    animation: fadeIn 10s ease-in-out forwards;
+  }
+  
+  .logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 20px;
+  }
+  
+  .title {
+    font-size: 3rem;
+    font-weight: bold;
+  }
+  
+  .progressContainer {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Space between bar and counter */
+    margin-top: 40px;
+  }
+  
+  .progressBar {
+    width: 300px; /* Fixed width for consistency */
+    height: 10px;
+    background-color: #D7CCC8; /* Lightened plum shade */
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .progressFill {
+    height: 100%;
+    background-color: #FF7043; /* Warm coral */
+    transition: width 0.1s linear;
+  }
+  
+  .progressCounter {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    20% { opacity: 0; } /* Delay fade-in slightly */
+    100% { opacity: 1; }
+  }
