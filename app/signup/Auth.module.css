@@ -101,3 +101,46 @@
       max-width: 100%;
     }
   }
+
+  /* app/signup/Auth.module.css */
+/* Existing styles remain, adding new ones */
+.imageUpload {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .imageLabel {
+    width: 150px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #D7CCC8; /* Lightened plum */
+    border-radius: 50%;
+    cursor: pointer;
+    color: #6D4C41; /* Deep plum */
+    text-align: center;
+    overflow: hidden;
+  }
+  
+  .preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .hiddenInput {
+    display: none;
+  }
+  
+  .textarea {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #D7CCC8; /* Lightened plum */
+    border-radius: 5px;
+    background-color: #FFF;
+    color: #6D4C41; /* Deep plum */
+    resize: vertical;
+    min-height: 100px;
+  }
