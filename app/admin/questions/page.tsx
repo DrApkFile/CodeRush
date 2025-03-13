@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/src/contexts/AuthContext';
 import { isAdmin } from '@/src/lib/auth/admin';
 import { addDoc, collection, updateDoc } from 'firebase/firestore';
 import { db } from '@/src/lib/firebase/config';
@@ -55,6 +54,109 @@ const LANGUAGES: Language[] = [
   'HTML',
   'CSS'
 ];
+
+const LANGUAGE_TOPICS: Record<Language, string[]> = {
+  'Java': [
+    'Variables & Data Types',
+    'Control Flow',
+    'Arrays & Collections',
+    'Object-Oriented Programming',
+    'Exception Handling',
+    'File I/O',
+    'Multithreading',
+    'Database Connectivity'
+  ],
+  'Python': [
+    'Variables & Data Types',
+    'Control Flow',
+    'Lists & Dictionaries',
+    'Functions & Modules',
+    'Object-Oriented Programming',
+    'File Handling',
+    'Regular Expressions',
+    'Data Structures'
+  ],
+  'C++': [
+    'Variables & Data Types',
+    'Control Flow',
+    'Arrays & Strings',
+    'Pointers & References',
+    'Object-Oriented Programming',
+    'STL',
+    'Memory Management',
+    'Templates'
+  ],
+  'C#': [
+    'Variables & Data Types',
+    'Control Flow',
+    'Arrays & Collections',
+    'Object-Oriented Programming',
+    'LINQ',
+    'File I/O',
+    'Windows Forms',
+    'ASP.NET Core'
+  ],
+  'JavaScript': [
+    'Variables & Data Types',
+    'Control Flow',
+    'Arrays & Objects',
+    'Functions & Closures',
+    'DOM Manipulation',
+    'Event Handling',
+    'Async Programming',
+    'ES6+ Features'
+  ],
+  'React': [
+    'Components & Props',
+    'State & Lifecycle',
+    'Hooks',
+    'Event Handling',
+    'Forms & Validation',
+    'Routing',
+    'Context API',
+    'Redux'
+  ],
+  'Next.js': [
+    'Pages & Routing',
+    'Data Fetching',
+    'Server Components',
+    'API Routes',
+    'Static Generation',
+    'Server-Side Rendering',
+    'Authentication',
+    'Deployment'
+  ],
+  'TypeScript': [
+    'Types & Interfaces',
+    'Generics',
+    'Classes & Inheritance',
+    'Modules',
+    'Type Guards',
+    'Decorators',
+    'Advanced Types',
+    'TypeScript with React'
+  ],
+  'HTML': [
+    'Elements & Tags',
+    'Forms & Input',
+    'Tables & Lists',
+    'Semantic HTML',
+    'Multimedia',
+    'Accessibility',
+    'SEO Basics',
+    'HTML5 Features'
+  ],
+  'CSS': [
+    'Selectors & Specificity',
+    'Box Model',
+    'Flexbox',
+    'Grid',
+    'Responsive Design',
+    'Animations',
+    'CSS Variables',
+    'CSS Preprocessors'
+  ]
+};
 
 const FORMATS: QuestionFormat[] = [
   'DragAndDrop',
@@ -220,9 +322,11 @@ print(squares)`,
   } as AccomplishTaskQuestion
 };
 
+const POINTS_OPTIONS = Array.from({ length: 10 }, (_, i) => i + 1);
+const TIME_LIMIT_OPTIONS = Array.from({ length: 10 }, (_, i) => i + 1);
+
 export default function AdminQuestions() {
   const router = useRouter();
-  const { user } = useAuth();
   const { toast } = useToast();
   
   const [formData, setFormData] = useState({
@@ -294,11 +398,57 @@ export default function AdminQuestions() {
             <h3 className="text-lg font-semibold">{formData.title}</h3>
             <p>{formData.description}</p>
             <div className="space-y-2">
-              {formData.codeSnippets.map((snippet, index) => (
-                <div key={index} className="p-2 bg-muted rounded border cursor-move">
-                  {snippet}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-medium mb-2">Drag from here:</h4>
+                  <div className="space-y-2">
+                    {formData.codeSnippets.map((snippet, index) => (
+                      <div
+                        key={`source-${index}`}
+                        draggable
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData('text/plain', index.toString());
+                        }}
+                        className="p-2 bg-muted rounded border cursor-move hover:bg-muted/80 transition-colors"
+                      >
+                        {snippet}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
+                <div>
+                  <h4 className="font-medium mb-2">Drop here:</h4>
+                  <div className="space-y-2">
+                    {Array(formData.codeSnippets.length).fill(null).map((_, index) => (
+                      <div
+                        key={`target-${index}`}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          e.currentTarget.classList.add('bg-primary/10');
+                        }}
+                        onDragLeave={(e) => {
+                          e.currentTarget.classList.remove('bg-primary/10');
+                        }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          e.currentTarget.classList.remove('bg-primary/10');
+                          const sourceIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                          const newOrder = [...formData.correctOrder];
+                          newOrder[index] = sourceIndex;
+                          setFormData({ ...formData, correctOrder: newOrder });
+                        }}
+                        className="p-2 bg-muted/50 rounded border border-dashed min-h-[2.5rem]"
+                      >
+                        {formData.correctOrder[index] !== undefined && (
+                          <div className="p-2 bg-muted rounded">
+                            {formData.codeSnippets[formData.correctOrder[index]]}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         );
@@ -382,7 +532,6 @@ export default function AdminQuestions() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
 
     try {
       const baseQuestionData = {
@@ -397,7 +546,6 @@ export default function AdminQuestions() {
         code: formData.code,
         createdAt: new Date(),
         updatedAt: new Date(),
-        createdBy: user.uid,
       };
 
       // Cast the question data based on format
@@ -606,31 +754,59 @@ export default function AdminQuestions() {
 
                       <div>
                         <Label>Topic</Label>
-                        <Input
+                        <Select
                           value={formData.topic}
-                          onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
-                          required
-                        />
+                          onValueChange={(value) => setFormData({ ...formData, topic: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a topic" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {LANGUAGE_TOPICS[formData.language].map((topic) => (
+                              <SelectItem key={topic} value={topic}>
+                                {topic}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <Label>Points</Label>
-                          <Input
-                            type="number"
-                            value={formData.points}
-                            onChange={(e) => setFormData({ ...formData, points: Number(e.target.value) })}
-                            required
-                          />
+                          <Select
+                            value={formData.points.toString()}
+                            onValueChange={(value) => setFormData({ ...formData, points: Number(value) })}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {POINTS_OPTIONS.map((point) => (
+                                <SelectItem key={point} value={point.toString()}>
+                                  {point} point{point !== 1 ? 's' : ''}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
                         <div>
                           <Label>Time Limit (seconds)</Label>
-                          <Input
-                            type="number"
-                            value={formData.timeLimit}
-                            onChange={(e) => setFormData({ ...formData, timeLimit: Number(e.target.value) })}
-                            required
-                          />
+                          <Select
+                            value={formData.timeLimit.toString()}
+                            onValueChange={(value) => setFormData({ ...formData, timeLimit: Number(value) })}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {TIME_LIMIT_OPTIONS.map((time) => (
+                                <SelectItem key={time} value={time.toString()}>
+                                  {time} second{time !== 1 ? 's' : ''}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
                     </div>
@@ -692,6 +868,34 @@ export default function AdminQuestions() {
                             rows={10}
                             required
                           />
+                          <div>
+                            <Label>Correct Order (comma-separated indices, starting from 0)</Label>
+                            <Input
+                              value={formData.correctOrder.join(', ')}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                // Allow empty input
+                                if (!value) {
+                                  setFormData({
+                                    ...formData,
+                                    correctOrder: []
+                                  });
+                                  return;
+                                }
+                                // Split by comma and handle each number
+                                const order = value
+                                  .split(',')
+                                  .map(num => parseInt(num.trim()))
+                                  .filter(num => !isNaN(num));
+                                setFormData({
+                                  ...formData,
+                                  correctOrder: order
+                                });
+                              }}
+                              placeholder="0, 1, 2, 3"
+                              required
+                            />
+                          </div>
                         </div>
                       )}
 
@@ -864,16 +1068,16 @@ export default function AdminQuestions() {
 
       {/* Success Alert */}
       <AlertDialog open={showSuccessAlert} onOpenChange={setShowSuccessAlert}>
-        <AlertDialogContent className="bg-background border-2 border-green-500 w-[95vw] max-w-[800px] h-[400px] flex flex-col justify-between">
-          <AlertDialogHeader className="space-y-6 p-8">
-            <AlertDialogTitle className="text-green-500 text-3xl font-bold">Success!</AlertDialogTitle>
-            <AlertDialogDescription className="text-xl leading-relaxed">
+        <AlertDialogContent className="bg-background border-2 border-green-500 w-[90vw] max-w-[500px] h-[300px] flex flex-col justify-between">
+          <AlertDialogHeader className="space-y-4 p-6">
+            <AlertDialogTitle className="text-green-500 text-2xl font-bold">Success!</AlertDialogTitle>
+            <AlertDialogDescription className="text-lg leading-relaxed">
               Your question has been successfully created and added to the database.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="p-8 space-x-4">
+          <AlertDialogFooter className="p-6 space-x-4">
             <AlertDialogAction 
-              className="bg-green-500 hover:bg-green-600 text-white px-12 py-6 text-lg"
+              className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 text-base"
               onClick={() => {
                 setShowSuccessAlert(false);
                 router.push('/admin/questions/list');
@@ -882,7 +1086,7 @@ export default function AdminQuestions() {
               View Questions
             </AlertDialogAction>
             <AlertDialogAction 
-              className="bg-primary hover:bg-primary/90 px-12 py-6 text-lg"
+              className="bg-primary hover:bg-primary/90 px-8 py-4 text-base"
               onClick={() => setShowSuccessAlert(false)}
             >
               Create Another
@@ -893,16 +1097,16 @@ export default function AdminQuestions() {
 
       {/* Error Alert */}
       <AlertDialog open={showErrorAlert} onOpenChange={setShowErrorAlert}>
-        <AlertDialogContent className="bg-background border-2 border-destructive w-[95vw] max-w-[800px] h-[400px] flex flex-col justify-between">
-          <AlertDialogHeader className="space-y-6 p-8">
-            <AlertDialogTitle className="text-destructive text-3xl font-bold">Error</AlertDialogTitle>
-            <AlertDialogDescription className="text-xl leading-relaxed">
+        <AlertDialogContent className="bg-background border-2 border-destructive w-[90vw] max-w-[500px] h-[300px] flex flex-col justify-between">
+          <AlertDialogHeader className="space-y-4 p-6">
+            <AlertDialogTitle className="text-destructive text-2xl font-bold">Error</AlertDialogTitle>
+            <AlertDialogDescription className="text-lg leading-relaxed">
               {errorMessage}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="p-8">
+          <AlertDialogFooter className="p-6">
             <AlertDialogAction 
-              className="bg-destructive hover:bg-destructive/90 text-white px-12 py-6 text-lg w-full"
+              className="bg-destructive hover:bg-destructive/90 text-white px-8 py-4 text-base w-full"
               onClick={() => setShowErrorAlert(false)}
             >
               Try Again

@@ -125,9 +125,9 @@ export default function QuestionList() {
   };
 
   const filteredQuestions = questions.filter(q => {
-    const matchesLanguage = !filter.language || q.language === filter.language;
-    const matchesDifficulty = !filter.difficulty || q.difficulty === filter.difficulty;
-    const matchesFormat = !filter.format || q.format === filter.format;
+    const matchesLanguage = !filter.language || filter.language === 'all' || q.language === filter.language;
+    const matchesDifficulty = !filter.difficulty || filter.difficulty === 'all' || q.difficulty === filter.difficulty;
+    const matchesFormat = !filter.format || filter.format === 'all' || q.format === filter.format;
     const matchesSearch = !filter.search || 
       q.title.toLowerCase().includes(filter.search.toLowerCase()) ||
       q.description.toLowerCase().includes(filter.search.toLowerCase()) ||
@@ -184,7 +184,7 @@ export default function QuestionList() {
                   <SelectValue placeholder="Filter by language" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Languages</SelectItem>
+                  <SelectItem value="all">All Languages</SelectItem>
                   {Array.from(new Set(questions.map(q => q.language))).map(lang => (
                     <SelectItem key={lang} value={lang}>
                       {lang}
@@ -200,7 +200,7 @@ export default function QuestionList() {
                   <SelectValue placeholder="Filter by difficulty" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Difficulties</SelectItem>
+                  <SelectItem value="all">All Difficulties</SelectItem>
                   <SelectItem value="Easy">Easy</SelectItem>
                   <SelectItem value="Medium">Medium</SelectItem>
                   <SelectItem value="Hard">Hard</SelectItem>
@@ -214,7 +214,7 @@ export default function QuestionList() {
                   <SelectValue placeholder="Filter by format" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Formats</SelectItem>
+                  <SelectItem value="all">All Formats</SelectItem>
                   <SelectItem value="DragAndDrop">Drag and Drop</SelectItem>
                   <SelectItem value="FixTheCode">Fix the Code</SelectItem>
                   <SelectItem value="MultipleChoice">Multiple Choice</SelectItem>

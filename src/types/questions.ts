@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore';
+
 export type Language =
   | 'Java'
   | 'Python'
@@ -8,7 +10,19 @@ export type Language =
   | 'Next.js'
   | 'TypeScript'
   | 'HTML'
-  | 'CSS';
+  | 'CSS'
+  | 'PHP'
+  | 'Ruby'
+  | 'Go'
+  | 'Rust'
+  | 'Swift'
+  | 'Kotlin'
+  | 'Dart'
+  | 'R'
+  | 'MATLAB'
+  | 'Shell'
+  | 'SQL'
+  | 'Assembly';
 
 export type Difficulty = 'Easy' | 'Medium' | 'Hard';
 
@@ -21,7 +35,7 @@ export type QuestionFormat =
 
 // Base interface for all question types
 export interface BaseQuestion {
-  id: string;
+  id?: string;
   title: string;
   description: string;
   format: QuestionFormat;
@@ -30,13 +44,14 @@ export interface BaseQuestion {
   topic: string;
   points: number;
   timeLimit: number; // in seconds
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
 }
 
 // For "Drag and Drop" questions
 export interface DragAndDropQuestion extends BaseQuestion {
   format: 'DragAndDrop';
+  code: string;
   codeSnippets: string[];
   correctOrder: number[];
 }
@@ -45,6 +60,7 @@ export interface DragAndDropQuestion extends BaseQuestion {
 export interface FixTheCodeQuestion extends BaseQuestion {
   format: 'FixTheCode';
   code: string;
+  solution: string;
   errorLine: number;
   correctCode: string;
 }
@@ -69,11 +85,12 @@ export interface SubobjectiveQuestion extends BaseQuestion {
 export interface AccomplishTaskQuestion extends BaseQuestion {
   format: 'AccomplishTask';
   initialCode: string;
-  testCases: {
+  code: string;
+  solution: string;
+  testCases: Array<{
     input: string;
     output: string;
-  }[];
-  solution: string;
+  }>;
 }
 
 export type Question =
