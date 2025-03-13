@@ -642,71 +642,73 @@ export default function AdminQuestions() {
     <div className="container mx-auto p-4 md:p-6">
       <Card className="border-primary/20">
         <CardHeader className="space-y-1 bg-primary/5 rounded-t-lg">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-2xl font-bold text-primary">Create Question</CardTitle>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <CardTitle className="text-xl sm:text-2xl font-bold text-primary">Create Question</CardTitle>
             <Badge variant={formData.difficulty === 'Easy' ? 'secondary' : formData.difficulty === 'Medium' ? 'default' : 'destructive'}>
               {formData.difficulty}
             </Badge>
           </div>
-          <p className="text-muted-foreground">Create a new coding challenge</p>
+          <p className="text-sm sm:text-base text-muted-foreground">Create a new coding challenge</p>
         </CardHeader>
-        <CardContent className="p-4 md:p-6">
+        <CardContent className="p-2 sm:p-4 md:p-6">
           <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'edit' | 'preview')} className="w-full">
-            <TabsList className="mb-4 w-full justify-start">
-              <TabsTrigger value="edit" className="flex-1">
+            <TabsList className="mb-4 w-full flex flex-col sm:flex-row">
+              <TabsTrigger value="edit" className="flex-1 text-sm sm:text-base">
                 Edit Question
               </TabsTrigger>
-              <TabsTrigger value="preview" className="flex-1">
+              <TabsTrigger value="preview" className="flex-1 text-sm sm:text-base">
                 Preview
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="edit">
-              <div className="mb-6">
+              <div className="mb-4 sm:mb-6">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={loadPlaceholder}
-                  className="w-full border-primary/20 hover:bg-primary/5"
+                  className="w-full text-sm sm:text-base border-primary/20 hover:bg-primary/5"
                 >
                   Load Example Question for {formData.format}
                 </Button>
               </div>
 
               <ScrollArea className="h-[calc(100vh-300px)]">
-                <form id="question-form" onSubmit={handlePreview} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
+                <form id="question-form" onSubmit={handlePreview} className="space-y-4 sm:space-y-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                    <div className="space-y-3 sm:space-y-4">
                       <div>
-                        <Label>Title</Label>
+                        <Label className="text-sm sm:text-base">Title</Label>
                         <Input
                           value={formData.title}
                           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                           required
+                          className="text-sm sm:text-base"
                         />
                       </div>
 
                       <div>
-                        <Label>Description</Label>
+                        <Label className="text-sm sm:text-base">Description</Label>
                         <Textarea
                           value={formData.description}
                           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                           required
+                          className="text-sm sm:text-base"
                         />
                       </div>
 
                       <div>
-                        <Label>Language</Label>
+                        <Label className="text-sm sm:text-base">Language</Label>
                         <Select
                           value={formData.language}
                           onValueChange={(value: Language) => setFormData({ ...formData, language: value })}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className="text-sm sm:text-base">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
                             {LANGUAGES.map((lang) => (
-                              <SelectItem key={lang} value={lang}>
+                              <SelectItem key={lang} value={lang} className="text-sm sm:text-base">
                                 {lang}
                               </SelectItem>
                             ))}
@@ -715,17 +717,17 @@ export default function AdminQuestions() {
                       </div>
 
                       <div>
-                        <Label>Format</Label>
+                        <Label className="text-sm sm:text-base">Format</Label>
                         <Select
                           value={formData.format}
                           onValueChange={(value: QuestionFormat) => setFormData({ ...formData, format: value })}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className="text-sm sm:text-base">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
                             {FORMATS.map((format) => (
-                              <SelectItem key={format} value={format}>
+                              <SelectItem key={format} value={format} className="text-sm sm:text-base">
                                 {format}
                               </SelectItem>
                             ))}
@@ -734,17 +736,17 @@ export default function AdminQuestions() {
                       </div>
 
                       <div>
-                        <Label>Difficulty</Label>
+                        <Label className="text-sm sm:text-base">Difficulty</Label>
                         <Select
                           value={formData.difficulty}
                           onValueChange={(value: Difficulty) => setFormData({ ...formData, difficulty: value })}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className="text-sm sm:text-base">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
                             {DIFFICULTIES.map((diff) => (
-                              <SelectItem key={diff} value={diff}>
+                              <SelectItem key={diff} value={diff} className="text-sm sm:text-base">
                                 {diff}
                               </SelectItem>
                             ))}
@@ -753,17 +755,17 @@ export default function AdminQuestions() {
                       </div>
 
                       <div>
-                        <Label>Topic</Label>
+                        <Label className="text-sm sm:text-base">Topic</Label>
                         <Select
                           value={formData.topic}
                           onValueChange={(value) => setFormData({ ...formData, topic: value })}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className="text-sm sm:text-base">
                             <SelectValue placeholder="Select a topic" />
                           </SelectTrigger>
                           <SelectContent>
                             {LANGUAGE_TOPICS[formData.language].map((topic) => (
-                              <SelectItem key={topic} value={topic}>
+                              <SelectItem key={topic} value={topic} className="text-sm sm:text-base">
                                 {topic}
                               </SelectItem>
                             ))}
@@ -771,19 +773,19 @@ export default function AdminQuestions() {
                         </Select>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                          <Label>Points</Label>
+                          <Label className="text-sm sm:text-base">Points</Label>
                           <Select
                             value={formData.points.toString()}
                             onValueChange={(value) => setFormData({ ...formData, points: Number(value) })}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger className="text-sm sm:text-base">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
                               {POINTS_OPTIONS.map((point) => (
-                                <SelectItem key={point} value={point.toString()}>
+                                <SelectItem key={point} value={point.toString()} className="text-sm sm:text-base">
                                   {point} point{point !== 1 ? 's' : ''}
                                 </SelectItem>
                               ))}
@@ -791,17 +793,17 @@ export default function AdminQuestions() {
                           </Select>
                         </div>
                         <div>
-                          <Label>Time Limit (seconds)</Label>
+                          <Label className="text-sm sm:text-base">Time Limit (seconds)</Label>
                           <Select
                             value={formData.timeLimit.toString()}
                             onValueChange={(value) => setFormData({ ...formData, timeLimit: Number(value) })}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger className="text-sm sm:text-base">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
                               {TIME_LIMIT_OPTIONS.map((time) => (
-                                <SelectItem key={time} value={time.toString()}>
+                                <SelectItem key={time} value={time.toString()} className="text-sm sm:text-base">
                                   {time} second{time !== 1 ? 's' : ''}
                                 </SelectItem>
                               ))}
@@ -811,21 +813,21 @@ export default function AdminQuestions() {
                       </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                       {formData.format === 'MultipleChoice' && (
                         <>
                           <div>
-                            <Label>Question Code</Label>
+                            <Label className="text-sm sm:text-base">Question Code</Label>
                             <Textarea
                               value={formData.code}
                               onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                              className="font-mono"
+                              className="font-mono text-sm sm:text-base"
                               rows={10}
                               required
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label>Options</Label>
+                            <Label className="text-sm sm:text-base">Options</Label>
                             {formData.options.map((option, index) => (
                               <Input
                                 key={index}
@@ -837,11 +839,12 @@ export default function AdminQuestions() {
                                 }}
                                 placeholder={`Option ${index + 1}`}
                                 required
+                                className="text-sm sm:text-base"
                               />
                             ))}
                           </div>
                           <div>
-                            <Label>Correct Answer (0-based index)</Label>
+                            <Label className="text-sm sm:text-base">Correct Answer (0-based index)</Label>
                             <Input
                               type="number"
                               min={0}
@@ -849,6 +852,7 @@ export default function AdminQuestions() {
                               value={formData.correctAnswer}
                               onChange={(e) => setFormData({ ...formData, correctAnswer: Number(e.target.value) })}
                               required
+                              className="text-sm sm:text-base"
                             />
                           </div>
                         </>
@@ -1027,7 +1031,7 @@ export default function AdminQuestions() {
                     </div>
                   </div>
 
-                  <Button type="submit" className="w-full">
+                  <Button type="submit" className="w-full text-sm sm:text-base">
                     Preview Question
                   </Button>
                 </form>
@@ -1036,10 +1040,10 @@ export default function AdminQuestions() {
 
             <TabsContent value="preview">
               <ScrollArea className="h-[calc(100vh-300px)]">
-                <div className="space-y-6 p-4 bg-card rounded-lg border border-primary/20">
+                <div className="space-y-4 sm:space-y-6 p-3 sm:p-4 bg-card rounded-lg border border-primary/20">
                   <QuestionPreview />
                   
-                  <div className="flex gap-4 sticky bottom-0 bg-background p-4">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sticky bottom-0 bg-background p-3 sm:p-4">
                     <Button
                       type="button"
                       variant="outline"
@@ -1047,14 +1051,14 @@ export default function AdminQuestions() {
                         setShowPreview(false);
                         setActiveTab('edit');
                       }}
-                      className="flex-1"
+                      className="flex-1 text-sm sm:text-base"
                     >
                       Back to Edit
                     </Button>
                     <Button
                       type="button"
                       onClick={handleCreate}
-                      className="flex-1 bg-primary hover:bg-primary/90"
+                      className="flex-1 text-sm sm:text-base bg-primary hover:bg-primary/90"
                     >
                       Confirm & Create
                     </Button>
@@ -1069,15 +1073,15 @@ export default function AdminQuestions() {
       {/* Success Alert */}
       <AlertDialog open={showSuccessAlert} onOpenChange={setShowSuccessAlert}>
         <AlertDialogContent className="bg-background border-2 border-green-500 w-[90vw] max-w-[500px] h-[300px] flex flex-col justify-between">
-          <AlertDialogHeader className="space-y-4 p-6">
-            <AlertDialogTitle className="text-green-500 text-2xl font-bold">Success!</AlertDialogTitle>
-            <AlertDialogDescription className="text-lg leading-relaxed">
+          <AlertDialogHeader className="space-y-3 sm:space-y-4 p-4 sm:p-6">
+            <AlertDialogTitle className="text-green-500 text-xl sm:text-2xl font-bold">Success!</AlertDialogTitle>
+            <AlertDialogDescription className="text-base sm:text-lg leading-relaxed">
               Your question has been successfully created and added to the database.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="p-6 space-x-4">
+          <AlertDialogFooter className="p-4 sm:p-6 space-y-2 sm:space-y-0 sm:space-x-4">
             <AlertDialogAction 
-              className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 text-base"
+              className="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base"
               onClick={() => {
                 setShowSuccessAlert(false);
                 router.push('/admin/questions/list');
@@ -1086,7 +1090,7 @@ export default function AdminQuestions() {
               View Questions
             </AlertDialogAction>
             <AlertDialogAction 
-              className="bg-primary hover:bg-primary/90 px-8 py-4 text-base"
+              className="w-full sm:w-auto bg-primary hover:bg-primary/90 px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base"
               onClick={() => setShowSuccessAlert(false)}
             >
               Create Another
@@ -1098,15 +1102,15 @@ export default function AdminQuestions() {
       {/* Error Alert */}
       <AlertDialog open={showErrorAlert} onOpenChange={setShowErrorAlert}>
         <AlertDialogContent className="bg-background border-2 border-destructive w-[90vw] max-w-[500px] h-[300px] flex flex-col justify-between">
-          <AlertDialogHeader className="space-y-4 p-6">
-            <AlertDialogTitle className="text-destructive text-2xl font-bold">Error</AlertDialogTitle>
-            <AlertDialogDescription className="text-lg leading-relaxed">
+          <AlertDialogHeader className="space-y-3 sm:space-y-4 p-4 sm:p-6">
+            <AlertDialogTitle className="text-destructive text-xl sm:text-2xl font-bold">Error</AlertDialogTitle>
+            <AlertDialogDescription className="text-base sm:text-lg leading-relaxed">
               {errorMessage}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="p-6">
+          <AlertDialogFooter className="p-4 sm:p-6">
             <AlertDialogAction 
-              className="bg-destructive hover:bg-destructive/90 text-white px-8 py-4 text-base w-full"
+              className="w-full bg-destructive hover:bg-destructive/90 text-white px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base"
               onClick={() => setShowErrorAlert(false)}
             >
               Try Again

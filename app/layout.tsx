@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Code Rush",
   description: "Competitive coding platform",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
   icons: {
     icon: [
       {
@@ -32,9 +33,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-full flex flex-col`}
       >
         <AuthProvider>{children}</AuthProvider>
       </body>
