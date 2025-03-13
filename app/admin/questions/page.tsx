@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { isAdmin } from '@/src/lib/auth/admin';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, updateDoc } from 'firebase/firestore';
 import { db } from '@/src/lib/firebase/config';
 import type {
   Question,
@@ -385,15 +385,74 @@ export default function AdminQuestions() {
     if (!user) return;
 
     try {
-      const questionData = {
-        ...formData,
+      const baseQuestionData = {
+        title: formData.title,
+        description: formData.description,
+        language: formData.language,
+        format: formData.format,
+        difficulty: formData.difficulty,
+        topic: formData.topic,
+        points: formData.points,
+        timeLimit: formData.timeLimit,
+        code: formData.code,
         createdAt: new Date(),
         updatedAt: new Date(),
+        createdBy: user.uid,
       };
 
-      const questionsRef = collection(db, 'questions');
-      await addDoc(questionsRef, questionData);
+      // Cast the question data based on format
+      let typedQuestionData;
+      switch (formData.format) {
+        case 'MultipleChoice':
+          typedQuestionData = {
+            ...baseQuestionData,
+            options: formData.options,
+            correctAnswer: formData.correctAnswer,
+          };
+          break;
+        case 'DragAndDrop':
+          typedQuestionData = {
+            ...baseQuestionData,
+            codeSnippets: formData.codeSnippets,
+            correctOrder: formData.correctOrder,
+          };
+          break;
+        case 'FixTheCode':
+          typedQuestionData = {
+            ...baseQuestionData,
+            code: formData.code,
+            solution: formData.solution,
+            errorLine: formData.code.split('\n').findIndex((line, index) => 
+              line !== formData.solution.split('\n')[index]
+            ),
+            correctCode: formData.solution,
+          };
+          break;
+        case 'Subobjective':
+          typedQuestionData = {
+            ...baseQuestionData,
+            blanks: formData.blanks,
+            answers: formData.answers,
+          };
+          break;
+        case 'AccomplishTask':
+          typedQuestionData = {
+            ...baseQuestionData,
+            initialCode: formData.code,
+            code: formData.code,
+            solution: formData.solution,
+            testCases: formData.testCases,
+          };
+          break;
+      }
 
+      const questionsRef = collection(db, 'questions');
+      const docRef = await addDoc(questionsRef, typedQuestionData);
+
+      // Update the document with its ID
+      await updateDoc(docRef, { id: docRef.id });
+
+      console.log('Question created with ID:', docRef.id);
       setShowSuccessAlert(true);
 
       // Reset form and preview state after a short delay
@@ -421,6 +480,7 @@ export default function AdminQuestions() {
         setActiveTab('edit');
       }, 1500);
     } catch (error) {
+      console.error('Error creating question:', error);
       setErrorMessage(error instanceof Error ? error.message : 'Failed to create question');
       setShowErrorAlert(true);
     }
