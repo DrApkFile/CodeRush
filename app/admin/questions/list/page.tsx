@@ -169,59 +169,67 @@ export default function QuestionList() {
         </CardHeader>
         <CardContent className="p-4 md:p-6">
           <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Input
-                placeholder="Search questions..."
-                value={filter.search}
-                onChange={(e) => setFilter({ ...filter, search: e.target.value })}
-                className="border-primary/20"
-              />
-              <Select
-                value={filter.language}
-                onValueChange={(value) => setFilter({ ...filter, language: value })}
-              >
-                <SelectTrigger className="border-primary/20">
-                  <SelectValue placeholder="Filter by language" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Languages</SelectItem>
-                  {Array.from(new Set(questions.map(q => q.language))).map(lang => (
-                    <SelectItem key={lang} value={lang}>
-                      {lang}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select
-                value={filter.difficulty}
-                onValueChange={(value) => setFilter({ ...filter, difficulty: value })}
-              >
-                <SelectTrigger className="border-primary/20">
-                  <SelectValue placeholder="Filter by difficulty" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Difficulties</SelectItem>
-                  <SelectItem value="Easy">Easy</SelectItem>
-                  <SelectItem value="Medium">Medium</SelectItem>
-                  <SelectItem value="Hard">Hard</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select
-                value={filter.format}
-                onValueChange={(value) => setFilter({ ...filter, format: value })}
-              >
-                <SelectTrigger className="border-primary/20">
-                  <SelectValue placeholder="Filter by format" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Formats</SelectItem>
-                  <SelectItem value="DragAndDrop">Drag and Drop</SelectItem>
-                  <SelectItem value="FixTheCode">Fix the Code</SelectItem>
-                  <SelectItem value="MultipleChoice">Multiple Choice</SelectItem>
-                  <SelectItem value="Subobjective">Subobjective</SelectItem>
-                  <SelectItem value="AccomplishTask">Accomplish Task</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="w-full">
+                <Input
+                  placeholder="Search questions..."
+                  value={filter.search}
+                  onChange={(e) => setFilter({ ...filter, search: e.target.value })}
+                  className="border-primary/20 w-full"
+                />
+              </div>
+              <div className="w-full">
+                <Select
+                  value={filter.language}
+                  onValueChange={(value) => setFilter({ ...filter, language: value })}
+                >
+                  <SelectTrigger className="border-primary/20 w-full">
+                    <SelectValue placeholder="Filter by language" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Languages</SelectItem>
+                    {Array.from(new Set(questions.map(q => q.language))).map(lang => (
+                      <SelectItem key={lang} value={lang}>
+                        {lang}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="w-full">
+                <Select
+                  value={filter.difficulty}
+                  onValueChange={(value) => setFilter({ ...filter, difficulty: value })}
+                >
+                  <SelectTrigger className="border-primary/20 w-full">
+                    <SelectValue placeholder="Filter by difficulty" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Difficulties</SelectItem>
+                    <SelectItem value="Easy">Easy</SelectItem>
+                    <SelectItem value="Medium">Medium</SelectItem>
+                    <SelectItem value="Hard">Hard</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="w-full">
+                <Select
+                  value={filter.format}
+                  onValueChange={(value) => setFilter({ ...filter, format: value })}
+                >
+                  <SelectTrigger className="border-primary/20 w-full">
+                    <SelectValue placeholder="Filter by format" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Formats</SelectItem>
+                    <SelectItem value="DragAndDrop">Drag and Drop</SelectItem>
+                    <SelectItem value="FixTheCode">Fix the Code</SelectItem>
+                    <SelectItem value="MultipleChoice">Multiple Choice</SelectItem>
+                    <SelectItem value="Subobjective">Subobjective</SelectItem>
+                    <SelectItem value="AccomplishTask">Accomplish Task</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             {loading ? (
@@ -230,87 +238,90 @@ export default function QuestionList() {
               <div className="text-center py-8">No questions found</div>
             ) : (
               <ScrollArea className="h-[calc(100vh-300px)] border rounded-lg">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Title</TableHead>
-                      <TableHead>Language</TableHead>
-                      <TableHead>Format</TableHead>
-                      <TableHead>Difficulty</TableHead>
-                      <TableHead>Topic</TableHead>
-                      <TableHead>Points</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredQuestions.map((question) => (
-                      <TableRow key={question.id} className="hover:bg-muted/50">
-                        <TableCell className="font-medium">{question.title}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="border-primary/20">
-                            {question.language}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="border-primary/20">
-                            {question.format}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge className={getDifficultyColor(question.difficulty)}>
-                            {question.difficulty}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{question.topic}</TableCell>
-                        <TableCell>{question.points}</TableCell>
-                        <TableCell>
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => router.push(`/admin/questions/edit/${question.id}`)}
-                              className="border-primary/20 hover:bg-primary/5"
-                            >
-                              Edit
-                            </Button>
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <Button
-                                  variant="destructive"
-                                  size="sm"
-                                  onClick={() => setDeleteQuestionId(question.id)}
-                                >
-                                  Delete
-                                </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent className="bg-background">
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Delete Question</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    Are you sure you want to delete this question? This action cannot be undone.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel
-                                    onClick={() => setDeleteQuestionId(null)}
-                                  >
-                                    Cancel
-                                  </AlertDialogCancel>
-                                  <AlertDialogAction
-                                    className="bg-destructive hover:bg-destructive/90"
-                                    onClick={() => deleteQuestionId && handleDelete(deleteQuestionId)}
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="min-w-[200px]">Title</TableHead>
+                        <TableHead className="min-w-[120px]">Language</TableHead>
+                        <TableHead className="min-w-[120px]">Format</TableHead>
+                        <TableHead className="min-w-[100px]">Difficulty</TableHead>
+                        <TableHead className="min-w-[150px]">Topic</TableHead>
+                        <TableHead className="min-w-[80px]">Points</TableHead>
+                        <TableHead className="min-w-[150px] text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredQuestions.map((question) => (
+                        <TableRow key={question.id} className="hover:bg-muted/50">
+                          <TableCell className="font-medium whitespace-nowrap">{question.title}</TableCell>
+                          <TableCell className="whitespace-nowrap">
+                            <Badge variant="outline" className="border-primary/20">
+                              {question.language}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="whitespace-nowrap">
+                            <Badge variant="outline" className="border-primary/20">
+                              {question.format}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="whitespace-nowrap">
+                            <Badge className={getDifficultyColor(question.difficulty)}>
+                              {question.difficulty}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="whitespace-nowrap">{question.topic}</TableCell>
+                          <TableCell className="whitespace-nowrap">{question.points}</TableCell>
+                          <TableCell>
+                            <div className="flex flex-col sm:flex-row justify-end gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => router.push(`/admin/questions/edit/${question.id}`)}
+                                className="border-primary/20 hover:bg-primary/5 w-full sm:w-auto"
+                              >
+                                Edit
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => setDeleteQuestionId(question.id)}
+                                    className="w-full sm:w-auto"
                                   >
                                     Delete
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent className="bg-background">
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Delete Question</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Are you sure you want to delete this question? This action cannot be undone.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel
+                                      onClick={() => setDeleteQuestionId(null)}
+                                    >
+                                      Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                      className="bg-destructive hover:bg-destructive/90"
+                                      onClick={() => deleteQuestionId && handleDelete(deleteQuestionId)}
+                                    >
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               </ScrollArea>
             )}
           </div>
