@@ -466,7 +466,7 @@ export default function AdminQuestions() {
               </div>
 
               <ScrollArea className="h-[calc(100vh-300px)]">
-                <form onSubmit={handlePreview} className="space-y-6">
+                <form id="question-form" onSubmit={handlePreview} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">
                       <div>
@@ -788,8 +788,8 @@ export default function AdminQuestions() {
                       Back to Edit
                     </Button>
                     <Button
-                      type="button"
-                      onClick={handleCreate}
+                      type="submit"
+                      form="question-form"
                       className="flex-1 bg-primary hover:bg-primary/90"
                     >
                       Confirm & Create
