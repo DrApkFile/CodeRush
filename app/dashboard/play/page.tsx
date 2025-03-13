@@ -33,8 +33,121 @@ const LANGUAGES: Language[] = [
   'Next.js',
   'TypeScript',
   'HTML',
-  'CSS'
+  'CSS',
+  'PHP',
+  'Ruby',
+  'Go',
+  'Rust',
+  'Swift',
+  'Kotlin',
+  'Dart',
+  'R',
+  'MATLAB',
+  'Shell'
 ];
+
+const LANGUAGE_TOPICS: Partial<Record<Language, string[]>> = {
+  'Java': [
+    'Variables & Data Types',
+    'Control Flow',
+    'Arrays & Collections',
+    'Object-Oriented Programming',
+    'Exception Handling',
+    'File I/O',
+    'Multithreading',
+    'Database Connectivity'
+  ],
+  'Python': [
+    'Variables & Data Types',
+    'Control Flow',
+    'Lists & Dictionaries',
+    'Functions & Modules',
+    'Object-Oriented Programming',
+    'File Handling',
+    'Regular Expressions',
+    'Data Structures'
+  ],
+  'C++': [
+    'Variables & Data Types',
+    'Control Flow',
+    'Arrays & Strings',
+    'Pointers & References',
+    'Object-Oriented Programming',
+    'STL',
+    'Memory Management',
+    'Templates'
+  ],
+  'C#': [
+    'Variables & Data Types',
+    'Control Flow',
+    'Arrays & Collections',
+    'Object-Oriented Programming',
+    'LINQ',
+    'File I/O',
+    'Windows Forms',
+    'ASP.NET Core'
+  ],
+  'JavaScript': [
+    'Variables & Data Types',
+    'Control Flow',
+    'Arrays & Objects',
+    'Functions & Closures',
+    'DOM Manipulation',
+    'Event Handling',
+    'Async Programming',
+    'ES6+ Features'
+  ],
+  'React': [
+    'Components & Props',
+    'State & Lifecycle',
+    'Hooks',
+    'Event Handling',
+    'Forms & Validation',
+    'Routing',
+    'Context API',
+    'Redux'
+  ],
+  'Next.js': [
+    'Pages & Routing',
+    'Data Fetching',
+    'Server Components',
+    'API Routes',
+    'Static Generation',
+    'Server-Side Rendering',
+    'Authentication',
+    'Deployment'
+  ],
+  'TypeScript': [
+    'Types & Interfaces',
+    'Generics',
+    'Classes & Inheritance',
+    'Modules',
+    'Type Guards',
+    'Decorators',
+    'Advanced Types',
+    'TypeScript with React'
+  ],
+  'HTML': [
+    'Elements & Tags',
+    'Forms & Input',
+    'Tables & Lists',
+    'Semantic HTML',
+    'Multimedia',
+    'Accessibility',
+    'SEO Basics',
+    'HTML5 Features'
+  ],
+  'CSS': [
+    'Selectors & Specificity',
+    'Box Model',
+    'Flexbox',
+    'Grid',
+    'Responsive Design',
+    'Animations',
+    'CSS Variables',
+    'CSS Preprocessors'
+  ]
+};
 
 interface GameFormProps {
   mode: GameMode;
@@ -110,7 +223,10 @@ function GameForm({ mode, onSubmit }: GameFormProps) {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Language</Label>
-          <Select value={language} onValueChange={(value: string) => setLanguage(value as Language)}>
+          <Select value={language} onValueChange={(value: string) => {
+            setLanguage(value as Language);
+            setTopic(''); // Reset topic when language changes
+          }}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -140,12 +256,19 @@ function GameForm({ mode, onSubmit }: GameFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label>Topic (Optional)</Label>
-        <Input
-          placeholder="e.g., Arrays, Algorithms, React Hooks"
-          value={topic}
-          onChange={(e) => setTopic(e.target.value)}
-        />
+        <Label>Topic</Label>
+        <Select value={topic} onValueChange={setTopic}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select a topic" />
+          </SelectTrigger>
+          <SelectContent>
+            {LANGUAGE_TOPICS[language]?.map((topic) => (
+              <SelectItem key={topic} value={topic}>
+                {topic}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {mode === 'solo' && (
