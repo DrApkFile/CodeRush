@@ -526,7 +526,14 @@ export default function AdminQuestions() {
               </div>
 
               <ScrollArea className="h-[calc(100vh-300px)]">
-                <form id="question-form" onSubmit={handlePreview} className="space-y-6">
+                <form id="question-form" onSubmit={(e) => {
+                  e.preventDefault();
+                  if (activeTab === 'preview') {
+                    handleCreate(e);
+                  } else {
+                    handlePreview(e);
+                  }
+                }} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">
                       <div>
@@ -823,8 +830,11 @@ export default function AdminQuestions() {
                     </div>
                   </div>
 
-                  <Button type="submit" className="w-full">
-                    Preview Question
+                  <Button
+                    type="submit"
+                    className="flex-1 bg-primary hover:bg-primary/90"
+                  >
+                    Confirm & Create
                   </Button>
                 </form>
               </ScrollArea>
@@ -846,13 +856,6 @@ export default function AdminQuestions() {
                       className="flex-1"
                     >
                       Back to Edit
-                    </Button>
-                    <Button
-                      type="button"
-                      onClick={handleCreate}
-                      className="flex-1 bg-primary hover:bg-primary/90"
-                    >
-                      Confirm & Create
                     </Button>
                   </div>
                 </div>
