@@ -14,7 +14,7 @@ export default function AuthCard({ title, children }: AuthCardProps) {
       <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
         <div className="flex flex-col items-center mb-8">
           <Image
-            src="/CodeRushLogo.png"
+            src="/CodeRushLogo.jpg"
             alt="Code Rush Logo"
             width={64}
             height={64}

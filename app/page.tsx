@@ -57,7 +57,7 @@ export default function Home() {
       <div className={`${styles.content} ${showContent ? styles.visible : ''}`}>
         <div className={styles.logo}>
           <Image
-            src="/CodeRushLogo.png" // Make sure to add your logo file
+            src="/CodeRushLogo.jpg" // Make sure to add your logo file
             alt="Code Rush Logo"
             width={120}
             height={120}
