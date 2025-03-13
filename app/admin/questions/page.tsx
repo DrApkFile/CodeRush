@@ -848,8 +848,8 @@ export default function AdminQuestions() {
                       Back to Edit
                     </Button>
                     <Button
-                      type="submit"
-                      form="question-form"
+                      type="button"
+                      onClick={handleCreate}
                       className="flex-1 bg-primary hover:bg-primary/90"
                     >
                       Confirm & Create
