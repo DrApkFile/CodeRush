@@ -16,6 +16,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Code Rush",
   description: "Competitive coding platform",
+  icons: {
+    icon: [
+      {
+        url: "/CodeRushLogo2.png",
+        href: "/CodeRushLogo2.png"
+      }
+    ]
+  }
 };
 
 export default function RootLayout({
