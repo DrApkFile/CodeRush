@@ -148,7 +148,7 @@ function GameForm({ mode, onSubmit }: GameFormProps) {
         />
       </div>
 
-      {mode === 'solo' ? (
+      {mode === 'solo' && (
         <div className="space-y-2">
           <Label>Duration</Label>
           <Select 
@@ -164,7 +164,7 @@ function GameForm({ mode, onSubmit }: GameFormProps) {
             </SelectContent>
           </Select>
         </div>
-      ) : null}
+      )}
 
       {mode === 'friend' && (
         <div className="space-y-2">
@@ -258,8 +258,8 @@ export default function Play() {
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Play Code Rush</h1>
+    <div className="space-y-6">
+      <h1 className="text-3xl font-bold">Play Code Rush</h1>
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as GameMode)}>
         <TabsList className="grid grid-cols-4 w-full">
@@ -281,7 +281,7 @@ export default function Play() {
           </TabsTrigger>
         </TabsList>
 
-        <div className="grid gap-4 mt-4">
+        <div className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>
