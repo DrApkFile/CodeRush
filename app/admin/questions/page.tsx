@@ -864,16 +864,16 @@ export default function AdminQuestions() {
 
       {/* Success Alert */}
       <AlertDialog open={showSuccessAlert} onOpenChange={setShowSuccessAlert}>
-        <AlertDialogContent className="bg-background border-2 border-green-500">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-green-500 text-xl">Success!</AlertDialogTitle>
-            <AlertDialogDescription className="text-base">
+        <AlertDialogContent className="bg-background border-2 border-green-500 w-[95vw] max-w-[800px] h-[400px] flex flex-col justify-between">
+          <AlertDialogHeader className="space-y-6 p-8">
+            <AlertDialogTitle className="text-green-500 text-3xl font-bold">Success!</AlertDialogTitle>
+            <AlertDialogDescription className="text-xl leading-relaxed">
               Your question has been successfully created and added to the database.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
+          <AlertDialogFooter className="p-8 space-x-4">
             <AlertDialogAction 
-              className="bg-green-500 hover:bg-green-600 text-white px-6"
+              className="bg-green-500 hover:bg-green-600 text-white px-12 py-6 text-lg"
               onClick={() => {
                 setShowSuccessAlert(false);
                 router.push('/admin/questions/list');
@@ -882,7 +882,7 @@ export default function AdminQuestions() {
               View Questions
             </AlertDialogAction>
             <AlertDialogAction 
-              className="bg-primary hover:bg-primary/90"
+              className="bg-primary hover:bg-primary/90 px-12 py-6 text-lg"
               onClick={() => setShowSuccessAlert(false)}
             >
               Create Another
@@ -893,16 +893,16 @@ export default function AdminQuestions() {
 
       {/* Error Alert */}
       <AlertDialog open={showErrorAlert} onOpenChange={setShowErrorAlert}>
-        <AlertDialogContent className="bg-background border-2 border-destructive">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-destructive text-xl">Error</AlertDialogTitle>
-            <AlertDialogDescription className="text-base">
+        <AlertDialogContent className="bg-background border-2 border-destructive w-[95vw] max-w-[800px] h-[400px] flex flex-col justify-between">
+          <AlertDialogHeader className="space-y-6 p-8">
+            <AlertDialogTitle className="text-destructive text-3xl font-bold">Error</AlertDialogTitle>
+            <AlertDialogDescription className="text-xl leading-relaxed">
               {errorMessage}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
+          <AlertDialogFooter className="p-8">
             <AlertDialogAction 
-              className="bg-destructive hover:bg-destructive/90 text-white px-6"
+              className="bg-destructive hover:bg-destructive/90 text-white px-12 py-6 text-lg w-full"
               onClick={() => setShowErrorAlert(false)}
             >
               Try Again
