@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { isAdmin } from '@/src/lib/auth/admin';
-import { addDoc, collection, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, updateDoc, Timestamp } from 'firebase/firestore';
 import { db } from '@/src/lib/firebase/config';
 import type {
   Question,
@@ -52,10 +52,20 @@ const LANGUAGES: Language[] = [
   'Next.js',
   'TypeScript',
   'HTML',
-  'CSS'
+  'CSS',
+  'PHP',
+  'Ruby',
+  'Go',
+  'Rust',
+  'Swift',
+  'Kotlin',
+  'Dart',
+  'R',
+  'MATLAB',
+  'Shell'
 ];
 
-const LANGUAGE_TOPICS: Record<Language, string[]> = {
+const LANGUAGE_TOPICS: Partial<Record<Language, string[]>> = {
   'Java': [
     'Variables & Data Types',
     'Control Flow',
@@ -190,8 +200,8 @@ console.log(counter());
 console.log(counter());`,
     options: ["1, 1", "1, 2", "2, 1", "undefined, undefined"],
     correctAnswer: 1,
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now()
   } as MultipleChoiceQuestion,
   
   DragAndDrop: {
@@ -212,8 +222,8 @@ console.log(counter());`,
       "componentWillUnmount()"
     ],
     correctOrder: [1, 0, 2, 3],
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now()
   } as DragAndDropQuestion,
   
   FixTheCode: {
@@ -236,8 +246,8 @@ print(squares)`,
     correctCode: `numbers = [1, 2, 3, 4, 5]
 squares = [num * num for num in numbers]
 print(squares)`,
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now()
   } as FixTheCodeQuestion,
   
   Subobjective: {
@@ -258,8 +268,8 @@ print(squares)`,
 }`,
     blanks: ["string", "string", "number", "string"],
     answers: ["string", "string", "number", "string"],
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now()
   } as SubobjectiveQuestion,
   
   AccomplishTask: {
@@ -317,13 +327,58 @@ print(squares)`,
       { input: "const stack = new Stack(); stack.push(1); stack.peek();", output: "1" },
       { input: "const stack = new Stack(); stack.pop();", output: "null" }
     ],
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now()
   } as AccomplishTaskQuestion
 };
 
 const POINTS_OPTIONS = Array.from({ length: 10 }, (_, i) => i + 1);
 const TIME_LIMIT_OPTIONS = Array.from({ length: 10 }, (_, i) => i + 1);
+
+// Common responsive breakpoints
+const BREAKPOINTS = {
+  mobile: 'max-width: 640px',
+  tablet: 'min-width: 641px and max-width: 1024px',
+  desktop: 'min-width: 1025px'
+};
+
+// Common responsive spacing
+const SPACING = {
+  mobile: {
+    padding: 'p-4',
+    margin: 'm-4',
+    gap: 'gap-4'
+  },
+  tablet: {
+    padding: 'sm:p-6',
+    margin: 'sm:m-6',
+    gap: 'sm:gap-6'
+  },
+  desktop: {
+    padding: 'lg:p-8',
+    margin: 'lg:m-8',
+    gap: 'lg:gap-8'
+  }
+};
+
+// Common responsive typography
+const TYPOGRAPHY = {
+  mobile: {
+    heading: 'text-xl',
+    subheading: 'text-lg',
+    body: 'text-sm'
+  },
+  tablet: {
+    heading: 'sm:text-2xl',
+    subheading: 'sm:text-xl',
+    body: 'sm:text-base'
+  },
+  desktop: {
+    heading: 'lg:text-3xl',
+    subheading: 'lg:text-2xl',
+    body: 'lg:text-lg'
+  }
+};
 
 export default function AdminQuestions() {
   const router = useRouter();
@@ -544,8 +599,8 @@ export default function AdminQuestions() {
         points: formData.points,
         timeLimit: formData.timeLimit,
         code: formData.code,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
       };
 
       // Cast the question data based on format
@@ -764,7 +819,7 @@ export default function AdminQuestions() {
                             <SelectValue placeholder="Select a topic" />
                           </SelectTrigger>
                           <SelectContent>
-                            {LANGUAGE_TOPICS[formData.language].map((topic) => (
+                            {LANGUAGE_TOPICS[formData.language]?.map((topic) => (
                               <SelectItem key={topic} value={topic} className="text-sm sm:text-base">
                                 {topic}
                               </SelectItem>
