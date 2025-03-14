@@ -369,7 +369,7 @@ export default function Play() {
       );
 
       if (config.mode === 'solo') {
-        router.push(`/play/solo/${gameId}`);
+        router.push(`/dashboard/play/solo/${gameId}`);
       } else if (config.mode === 'random') {
         router.push(`/play/lobby/${gameId}`);
       } else {
