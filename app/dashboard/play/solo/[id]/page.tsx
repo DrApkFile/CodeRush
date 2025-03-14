@@ -14,6 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, Timer, Trophy, XCircle } from "lucide-react";
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/src/lib/firebase/config';
+import { Game, GameConfig } from '@/src/types/game';
 
 interface GameState {
   questions: Question[];
@@ -39,6 +42,7 @@ export default function SoloPlay({ params }: { params: { id: string } }) {
   const [error, setError] = useState<string | null>(null);
   const [answer, setAnswer] = useState<string>('');
   const [code, setCode] = useState<string>('');
+  const [gameConfig, setGameConfig] = useState<GameConfig | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -46,12 +50,25 @@ export default function SoloPlay({ params }: { params: { id: string } }) {
       return;
     }
 
-    const fetchQuestions = async () => {
+    const fetchGameAndQuestions = async () => {
       try {
-        // TODO: Get game config from the game document
+        // Fetch game configuration
+        const gameRef = doc(db, 'games', params.id);
+        const gameSnap = await getDoc(gameRef);
+        
+        if (!gameSnap.exists()) {
+          setError('Game not found');
+          setLoading(false);
+          return;
+        }
+
+        const game = gameSnap.data() as Game;
+        setGameConfig(game.config);
+
+        // Fetch questions based on game configuration
         const questions = await getQuestions({
-          language: 'JavaScript', // Default for now
-          difficulty: 'Easy',
+          language: game.config.language,
+          difficulty: game.config.difficulty,
           limit: 10,
         });
 
@@ -64,17 +81,19 @@ export default function SoloPlay({ params }: { params: { id: string } }) {
         setGameState(prev => ({
           ...prev,
           questions,
+          timeLeft: game.config.duration,
           loading: false,
         }));
       } catch (err) {
-        setError('Failed to load questions. Please try again later.');
+        console.error('Error fetching game:', err);
+        setError('Failed to load game. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchQuestions();
-  }, [user, router]);
+    fetchGameAndQuestions();
+  }, [user, router, params.id]);
 
   useEffect(() => {
     if (gameState.isGameOver || gameState.showResults) return;
